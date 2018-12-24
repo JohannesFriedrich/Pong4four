@@ -14,4 +14,4 @@ Connect 4 joysticks (via cable or bluethooth). The game also runs with less then
 python pong4four.py
 ```
 
-<img src="Figures/pong4four" width="672" style="display: block; margin: auto;" />
+<img src="Figures/pong4four.png" width="672" style="display: block; margin: auto;" />

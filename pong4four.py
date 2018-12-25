@@ -7,7 +7,6 @@ white = (255, 255, 255)
 blue = (0, 0, 255)
 red = (255,0,0)
 green = (0,255,0)
-blue = (0,0,255)
 darkBlue = (0,0,128)
 pink = (255,200,200)
  
@@ -230,25 +229,21 @@ all_sprites = pygame.sprite.Group()
 movingsprites = pygame.sprite.Group()
  
 #Create the players
-player1 = Player_vert(10, screen_height / 2, 0, blue)
-all_sprites.add(player1)
-wall_list.add(player1)
-movingsprites.add(player1)
- 
-player2 = Player_vert(screen_width - 20, screen_height / 2, 1, red)
-all_sprites.add(player2)
-wall_list.add(player2)
-movingsprites.add(player2)
 
-player3 = Player_hor(screen_width/ 2, 20, 2, pink)
-all_sprites.add(player3)
-wall_list.add(player3)
-movingsprites.add(player3)
- 
-player4 = Player_hor(screen_width/ 2, screen_height -20,3, green)
-all_sprites.add(player4)
-wall_list.add(player4)
-movingsprites.add(player4)
+players = []
+players_x = [20, screen_width-20, screen_width/2, screen_width/2]
+players_y = [screen_height/2, screen_height/2, 20, screen_height -20]
+players_color = [blue, red, pink, green]
+
+for player in range(4):
+    if player < 2:
+        players.append(Player_vert(players_x[player], players_y[player], player, players_color[player]))
+    else:
+        players.append(Player_hor(players_x[player], players_y[player], player, players_color[player]))
+
+    all_sprites.add(players[player])
+    wall_list.add(players[player])
+    movingsprites.add(players[player])
 
 # Make the walls. (x_pos, y_pos, width, height)
 # Top wall
@@ -285,7 +280,7 @@ while not done:
  
         # The user clicked the mouse button
         # or pressed a key
-        elif event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:## or player1.my_joystick.get_button(0) or player2.my_joystick.get_button(0) or player3.my_joystick.get_button(0) or player4.my_joystick.get_button(0): 
+        elif (event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN):## or player1.my_joystick.get_button(0) or player2.my_joystick.get_button(0) or player3.my_joystick.get_button(0) or player4.my_joystick.get_button(0): 
  
             # Is the ball not moving?
             if ball.change_y == 0:

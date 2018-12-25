@@ -10,9 +10,6 @@ green = (0,255,0)
 blue = (0,0,255)
 darkBlue = (0,0,128)
 pink = (255,200,200)
-
-color_hit = white
- 
  
 class Player_vert(pygame.sprite.Sprite):
     """ This class represents the paddles on either side of the screen
@@ -28,6 +25,7 @@ class Player_vert(pygame.sprite.Sprite):
         self.width = 10
         self.height = 75 ##75
         self.my_joystick = None
+        self.color = color
  
         # Create an image of the ball, and fill it with a color.
         # This could also be an image loaded from the disk.
@@ -50,6 +48,9 @@ class Player_vert(pygame.sprite.Sprite):
             # Use joystick #0 and initialize it
             self.my_joystick = pygame.joystick.Joystick(joystick_no)
             self.my_joystick.init()
+
+    def get_color(self):
+        color_hit = self.image.get_colorkey()
  
     def update(self):
         """ Update the player's position. """
@@ -85,6 +86,7 @@ class Player_hor(pygame.sprite.Sprite):
         self.width = 75
         self.height = 10 ##75   
         self.my_joystick = None
+        self.color = color
  
         # Create an image of the ball, and fill it with a color.
         # This could also be an image loaded from the disk.
@@ -107,7 +109,7 @@ class Player_hor(pygame.sprite.Sprite):
             # Use joystick #0 and initialize it
             self.my_joystick = pygame.joystick.Joystick(joystick_no)
             self.my_joystick.init()
- 
+
     def update(self):
         """ Update the player's position. """
 
@@ -151,14 +153,16 @@ class Ball(pygame.sprite.Sprite):
     walls = None
  
     # Constructor function
-    def __init__(self, x, y, walls):
+    def __init__(self, x, y, walls, color):
         # Call the parent's constructor
         # super().__init__()
         super(self.__class__, self).__init__()
+
+        self.color = color
  
         # Set height, width
         self.image = pygame.Surface([15, 15])
-        self.image.fill(white)
+        self.image.fill(color)
  
         # Make our top-left corner the passed-in location.
         self.rect = self.image.get_rect()
@@ -169,8 +173,6 @@ class Ball(pygame.sprite.Sprite):
  
     def update(self):
         """ Update the ball's position. """
-
-        self.image.fill(color_hit)
 
         # Get the old position, in case we need to go back to it
         old_x = self.rect.x
@@ -183,6 +185,7 @@ class Ball(pygame.sprite.Sprite):
             # Whoops, hit a wall. Go back to the old position
             self.rect.x = old_x
             self.change_x *= -1
+            self.image.fill(collide[0].color)
  
         old_y = self.rect.y
         new_y = old_y + self.change_y
@@ -194,6 +197,7 @@ class Ball(pygame.sprite.Sprite):
             # Whoops, hit a wall. Go back to the old position
             self.rect.y = old_y
             self.change_y *= -1
+            self.image.fill(collide[0].color)
  
         if self.rect.x < -20 or self.rect.x > screen_width + 20:
             self.change_x = 0
@@ -258,7 +262,7 @@ movingsprites.add(player4)
 #all_sprites.add(wall)
  
 # Create the ball
-ball = Ball(-50, -50, wall_list)
+ball = Ball(-50, -50, wall_list, white)
 movingsprites.add(ball)
 all_sprites.add(ball)
  
@@ -289,6 +293,7 @@ while not done:
                 # Start in the middle of the screen at a random y location
                 ball.rect.x = screen_width / 2
                 ball.rect.y = screen_height / 2
+                ball.image.fill(white)
  
                 # Set a random vector
                 ball.change_y = random.randrange(-5, 6)

@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 
  
 black = (0, 0, 0)
@@ -285,18 +286,26 @@ while not done:
             # Is the ball not moving?
             if ball.change_y == 0:
  
-                # Start in the middle of the screen at a random y location
+                # Start in the middle of the screen
                 ball.rect.x = screen_width / 2
                 ball.rect.y = screen_height / 2
                 ball.image.fill(white)
  
                 # Set a random vector
-                ball.change_y = random.randrange(-5, 6)
-                ball.change_x = random.randrange(5, 10)
+                degree = random.randrange(0,360)
+                while degree == 0 or degree == 90 or degree == 180 or degree == 270 or degree == 360:
+                    degree=random.randrange(0,360)
+                magnitude = 5 # determines the speed of the ball, may be subject to a random variable as well
+
+                ball.change_x = magnitude * math.cos(math.radians(degree))
+                ball.change_y = magnitude * math.sin(math.radians(degree))
+         
+                #ball.change_y = random.randrange(-5, 6)
+                #ball.change_x = random.randrange(5, 10)
  
                 # Is the ball headed left or right? Select randomly
-                if(random.randrange(2) == 0):
-                    ball.change_x *= -1
+                #if(random.randrange(2) == 0):
+                    #ball.change_x *= -1
  
     # Update the ball position. Pass it the list of stuff it can bounce off of
     movingsprites.update()
@@ -314,5 +323,3 @@ while not done:
  
 # All done, shut down Pygame
 pygame.quit()
-
-

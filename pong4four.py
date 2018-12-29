@@ -273,7 +273,10 @@ while not done:
  
                 # Set a random vector
                 degree = random.randrange(15,359)
-                while degree in [range(80,100), 180, range(265, 285)]:
+                excluded_angles = [range(80,100), range(178,182), range(265, 285)]
+                excluded_angles = [item for sublist in excluded_angles for item in sublist]
+                
+                while degree in excluded_angles:
                     degree=random.randrange(15,359)
                 magnitude = 5 # determines the speed of the ball, may be subject to a random variable as well
 

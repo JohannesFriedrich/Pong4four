@@ -36,8 +36,7 @@ class Player_vert(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
  
         # Set initial position of sprite
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.center = (x,y)
  
         # Count the joysticks the computer has
         joystick_count = pygame.joystick.get_count()
@@ -48,9 +47,6 @@ class Player_vert(pygame.sprite.Sprite):
             # Use joystick #0 and initialize it
             self.my_joystick = pygame.joystick.Joystick(joystick_no)
             self.my_joystick.init()
-
-    def get_color(self):
-        color_hit = self.image.get_colorkey()
  
     def update(self):
         """ Update the player's position. """
@@ -97,8 +93,7 @@ class Player_hor(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
  
         # Set initial position of sprite
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.center = (x,y)
  
         # Count the joysticks the computer has
         joystick_count = pygame.joystick.get_count()
@@ -230,7 +225,6 @@ all_sprites = pygame.sprite.Group()
 movingsprites = pygame.sprite.Group()
  
 #Create the players
-
 players = []
 players_x = [20, screen_width-20, screen_width/2, screen_width/2]
 players_y = [screen_height/2, screen_height/2, 20, screen_height -20]
@@ -241,7 +235,7 @@ for player in range(4):
         players.append(Player_vert(players_x[player], players_y[player], player, players_color[player]))
     else:
         players.append(Player_hor(players_x[player], players_y[player], player, players_color[player]))
-
+         
     all_sprites.add(players[player])
     wall_list.add(players[player])
     movingsprites.add(players[player])

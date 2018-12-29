@@ -1,15 +1,7 @@
 import pygame
 import random
 import math
-
- 
-black = (0, 0, 0)
-white = (255, 255, 255)
-blue = (0, 0, 255)
-red = (255,0,0)
-green = (0,255,0)
-darkBlue = (0,0,128)
-pink = (255,200,200)
+from get_colors import get_color
  
 class Player_vert(pygame.sprite.Sprite):
     """ This class represents the paddles on either side of the screen
@@ -23,7 +15,7 @@ class Player_vert(pygame.sprite.Sprite):
 
         # Variables to hold the height and width of the block
         self.width = 10
-        self.height = 75 ##75
+        self.height = 75
         self.my_joystick = None
         self.color = color
  
@@ -58,8 +50,8 @@ class Player_vert(pygame.sprite.Sprite):
             # It returns a number between -1.0 and +1.0
             vert_axis_pos = self.my_joystick.get_axis(1)
             
-            # Move x according to the axis.
-            # We multiply by 10 to speed up the movement.
+            # Move y according to the axis.
+            # We multiply by 20 to speed up the movement.
             self.rect.y = self.rect.y+vert_axis_pos*20 
  
             # If the user moves past the top/bottom of the screen, set the
@@ -131,7 +123,7 @@ class Wall(pygame.sprite.Sprite):
  
         # Make a blue wall, of the size specified in the parameters
         self.image = pygame.Surface([width, height])
-        self.image.fill((blue))
+        self.image.fill((get_color("blue")))
  
         # Make our top-left corner the passed-in location.
         self.rect = self.image.get_rect()
@@ -161,9 +153,7 @@ class Ball(pygame.sprite.Sprite):
  
         # Make our top-left corner the passed-in location.
         self.rect = self.image.get_rect()
-        self.rect.y = y
-        self.rect.x = x
- 
+        self.rect.center = (x,y) 
         self.walls = walls
  
     def update(self):
@@ -194,7 +184,7 @@ class Ball(pygame.sprite.Sprite):
             self.change_y *= -1
             self.image.fill(collide[0].color)
  
-        if self.rect.x < -20 or self.rect.x > screen_width + 20:
+        if self.rect.x < -10 or self.rect.x > screen_width + 10:
             self.change_x = 0
             self.change_y = 0
  
@@ -217,7 +207,7 @@ background = pygame.Surface(screen.get_size())
 background = background.convert()
  
 # Fill the screen with a black background
-background.fill(black)
+background.fill(get_color("black"))
  
 # All sprite lists
 wall_list = pygame.sprite.Group()
@@ -228,7 +218,7 @@ movingsprites = pygame.sprite.Group()
 players = []
 players_x = [20, screen_width-20, screen_width/2, screen_width/2]
 players_y = [screen_height/2, screen_height/2, 20, screen_height -20]
-players_color = [blue, red, pink, green]
+players_color = [get_color("blue"), get_color("red"), get_color("pink"), get_color("green")]
 
 for player in range(4):
     if player < 2:
@@ -252,7 +242,7 @@ for player in range(4):
 #all_sprites.add(wall)
  
 # Create the ball
-ball = Ball(-50, -50, wall_list, white)
+ball = Ball(-50, -50, wall_list, get_color("white"))
 movingsprites.add(ball)
 all_sprites.add(ball)
  
@@ -279,12 +269,12 @@ while not done:
                 # Start in the middle of the screen
                 ball.rect.x = screen_width / 2
                 ball.rect.y = screen_height / 2
-                ball.image.fill(white)
+                ball.image.fill(get_color("white"))
  
                 # Set a random vector
                 degree = random.randrange(15,359)
-                while degree in [random.randrange(80,100), 180, random.randrange(265, 285)]:
-                    degree=random.randrange(0,360)
+                while degree in [range(80,100), 180, range(265, 285)]:
+                    degree=random.randrange(15,359)
                 magnitude = 5 # determines the speed of the ball, may be subject to a random variable as well
 
                 ball.change_x = magnitude * math.cos(math.radians(degree))
@@ -294,7 +284,7 @@ while not done:
     movingsprites.update()
  
     # Clear the screen
-    screen.fill(black)
+    screen.fill(get_color("black"))
  
     # Draw the sprites
     all_sprites.draw(screen)

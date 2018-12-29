@@ -184,7 +184,7 @@ class Ball(pygame.sprite.Sprite):
  
         old_y = self.rect.y
         new_y = old_y + self.change_y
-        self.rect.y = new_y
+        self.rect.y = new_y 
  
         # Did this update cause us to hit a wall?
         collide = pygame.sprite.spritecollide(self, self.walls, False)
@@ -262,10 +262,6 @@ done = False
  
 # Main program loop
 while not done:
-
-    ## Play music
-    #pygame.mixer.music.load('foo.mp3')
-    #pygame.mixer.music.play(0)
  
     # Loop through any window events
     for event in pygame.event.get():
@@ -286,20 +282,13 @@ while not done:
                 ball.image.fill(white)
  
                 # Set a random vector
-                degree = random.randrange(0,360)
-                while degree == 0 or degree == 90 or degree == 180 or degree == 270 or degree == 360:
+                degree = random.randrange(15,359)
+                while degree in [random.randrange(80,100), 180, random.randrange(265, 285)]:
                     degree=random.randrange(0,360)
                 magnitude = 5 # determines the speed of the ball, may be subject to a random variable as well
 
                 ball.change_x = magnitude * math.cos(math.radians(degree))
                 ball.change_y = magnitude * math.sin(math.radians(degree))
-         
-                #ball.change_y = random.randrange(-5, 6)
-                #ball.change_x = random.randrange(5, 10)
- 
-                # Is the ball headed left or right? Select randomly
-                #if(random.randrange(2) == 0):
-                    #ball.change_x *= -1
  
     # Update the ball position. Pass it the list of stuff it can bounce off of
     movingsprites.update()

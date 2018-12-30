@@ -1,14 +1,7 @@
 import pygame
 import random
 import math
-
-black = (0, 0, 0)
-white = (255, 255, 255)
-blue = (0, 0, 255)
-red = (255,0,0)
-green = (0,255,0)
-darkBlue = (0,0,128)
-pink = (255,200,200)
+from get_colors import get_color
  
 class Player_vert(pygame.sprite.Sprite):
     """ This class represents the paddles on either side of the screen
@@ -22,7 +15,7 @@ class Player_vert(pygame.sprite.Sprite):
 
         # Variables to hold the height and width of the block
         self.width = 10
-        self.height = 75 ##75
+        self.height = 75
         self.my_joystick = None
         self.color = color
  
@@ -35,8 +28,7 @@ class Player_vert(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
  
         # Set initial position of sprite
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.center = (x,y)
  
         # Count the joysticks the computer has
         joystick_count = pygame.joystick.get_count()
@@ -47,9 +39,6 @@ class Player_vert(pygame.sprite.Sprite):
             # Use joystick #0 and initialize it
             self.my_joystick = pygame.joystick.Joystick(joystick_no)
             self.my_joystick.init()
-
-    def get_color(self):
-        color_hit = self.image.get_colorkey()
  
     def update(self):
         """ Update the player's position. """
@@ -61,8 +50,8 @@ class Player_vert(pygame.sprite.Sprite):
             # It returns a number between -1.0 and +1.0
             vert_axis_pos = self.my_joystick.get_axis(1)
             
-            # Move x according to the axis.
-            # We multiply by 10 to speed up the movement.
+            # Move y according to the axis.
+            # We multiply by 20 to speed up the movement.
             self.rect.y = self.rect.y+vert_axis_pos*20 
  
             # If the user moves past the top/bottom of the screen, set the
@@ -96,8 +85,7 @@ class Player_hor(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
  
         # Set initial position of sprite
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.center = (x,y)
  
         # Count the joysticks the computer has
         joystick_count = pygame.joystick.get_count()
@@ -135,7 +123,7 @@ class Wall(pygame.sprite.Sprite):
  
         # Make a blue wall, of the size specified in the parameters
         self.image = pygame.Surface([width, height])
-        self.image.fill((blue))
+        self.image.fill((get_color("blue")))
  
         # Make our top-left corner the passed-in location.
         self.rect = self.image.get_rect()
@@ -164,9 +152,7 @@ class Ball(pygame.sprite.Sprite):
  
         # Make our top-left corner the passed-in location.
         self.rect = self.image.get_rect()
-        self.rect.y = y
-        self.rect.x = x
- 
+        self.rect.center = (x,y) 
         self.walls = walls
  
     def update(self):
@@ -187,7 +173,7 @@ class Ball(pygame.sprite.Sprite):
  
         old_y = self.rect.y
         new_y = old_y + self.change_y
-        self.rect.y = new_y
+        self.rect.y = new_y 
  
         # Did this update cause us to hit a wall?
         collide = pygame.sprite.spritecollide(self, self.walls, False)
@@ -197,7 +183,7 @@ class Ball(pygame.sprite.Sprite):
             self.change_y *= -1
             self.image.fill(collide[0].color)
  
-        if self.rect.x < -20 or self.rect.x > screen_width + 20:
+        if self.rect.x < -10 or self.rect.x > screen_width + 10:
             self.change_x = 0
             self.change_y = 0
  
@@ -220,7 +206,7 @@ background = pygame.Surface(screen.get_size())
 background = background.convert()
  
 # Fill the screen with a black background
-background.fill(black)
+background.fill(get_color("black"))
  
 # All sprite lists
 wall_list = pygame.sprite.Group()
@@ -228,18 +214,17 @@ all_sprites = pygame.sprite.Group()
 movingsprites = pygame.sprite.Group()
  
 #Create the players
-
 players = []
 players_x = [20, screen_width-20, screen_width/2, screen_width/2]
 players_y = [screen_height/2, screen_height/2, 20, screen_height -20]
-players_color = [blue, red, pink, green]
+players_color = [get_color("blue"), get_color("red"), get_color("pink"), get_color("green")]
 
 for player in range(4):
     if player < 2:
         players.append(Player_vert(players_x[player], players_y[player], player, players_color[player]))
     else:
         players.append(Player_hor(players_x[player], players_y[player], player, players_color[player]))
-
+         
     all_sprites.add(players[player])
     wall_list.add(players[player])
     movingsprites.add(players[player])
@@ -256,7 +241,7 @@ for player in range(4):
 #all_sprites.add(wall)
  
 # Create the ball
-ball = Ball(-50, -50, wall_list, white)
+ball = Ball(-50, -50, wall_list, get_color("white"))
 movingsprites.add(ball)
 all_sprites.add(ball)
  

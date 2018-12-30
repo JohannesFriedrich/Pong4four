@@ -6,7 +6,7 @@ developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repo
 
 ## Run the game
 
-Requirements: Modules *pygame* and *random*
+Requirements: Modules *pygame*, x*random*, *math* and *colour*
 
 Connect 4 joysticks (via cable or bluethooth). The game also runs with less then 4 controllers, but this makes no sense ;-).
 

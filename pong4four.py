@@ -25,11 +25,8 @@ class Player_vert(pygame.sprite.Sprite):
         self.image.fill(color)
  
         # Fetch the rectangle object that has the dimensions of the image
-        self.rect = self.image.get_rect()
- 
-        # Set initial position of sprite
-        self.rect.center = (x,y)
- 
+        self.rect = self.image.get_rect(center = (x,y))
+
         # Count the joysticks the computer has
         joystick_count = pygame.joystick.get_count()
         if joystick_count < joystick_no+1:
@@ -72,7 +69,7 @@ class Player_hor(pygame.sprite.Sprite):
         super(self.__class__, self).__init__()
  
         self.width = 75
-        self.height = 10 ##75   
+        self.height = 10
         self.my_joystick = None
         self.color = color
  
@@ -82,10 +79,7 @@ class Player_hor(pygame.sprite.Sprite):
         self.image.fill(color)
  
         # Fetch the rectangle object that has the dimensions of the image
-        self.rect = self.image.get_rect()
- 
-        # Set initial position of sprite
-        self.rect.center = (x,y)
+        self.rect = self.image.get_rect(center = (x,y))
  
         # Count the joysticks the computer has
         joystick_count = pygame.joystick.get_count()
@@ -126,9 +120,7 @@ class Wall(pygame.sprite.Sprite):
         self.image.fill((get_color("blue")))
  
         # Make our top-left corner the passed-in location.
-        self.rect = self.image.get_rect()
-        self.rect.y = y
-        self.rect.x = x
+        self.rect = self.image.get_rect(center = (x,y))
  
 class Ball(pygame.sprite.Sprite):
     """ This class represents the ball that bounces around. """
@@ -151,8 +143,7 @@ class Ball(pygame.sprite.Sprite):
         self.image.fill(color)
  
         # Make our top-left corner the passed-in location.
-        self.rect = self.image.get_rect()
-        self.rect.center = (x,y) 
+        self.rect = self.image.get_rect(center = (x,y))
         self.walls = walls
  
     def update(self):
@@ -183,7 +174,7 @@ class Ball(pygame.sprite.Sprite):
             self.change_y *= -1
             self.image.fill(collide[0].color)
  
-        if self.rect.x < -10 or self.rect.x > screen_width + 10:
+        if self.rect.x < -20 or self.rect.x > screen_width + 10 or self.rect.y < -20 or self.rect.y > screen_height + 20:
             self.change_x = 0
             self.change_y = 0
  
@@ -253,24 +244,23 @@ def game_menu():
 
     while menu:
         for event in pygame.event.get():
-            print(event)
 
             largeText = pygame.font.Font('freesansbold.ttf',80)
             smallText = pygame.font.Font('freesansbold.ttf', 35)
             
-            textHeading = largeText.render("Pong4Four", True, white)
+            textHeading = largeText.render("Pong4Four", True, get_color("white"))
             locationHeading = textHeading.get_rect()
             locationHeading.center = ((screen_width/2),(screen_height/4))
 
-            textStart = smallText.render("Start Game", True, white)
+            textStart = smallText.render("Start Game", True, get_color("white"))
             locationStart = textStart.get_rect()
             locationStart.center = ((screen_width/2),(2*screen_height/4))
 
-            textSettings = smallText.render("Settings", True, white)
+            textSettings = smallText.render("Settings", True, get_color("white"))
             locationSettings = textSettings.get_rect()
             locationSettings.center = ((screen_width/2),(2.75*screen_height/4))
 
-            textQuit = smallText.render("Quit", True, white)
+            textQuit = smallText.render("Quit", True, get_color("white"))
             locationQuit = textQuit.get_rect()
             locationQuit.center = ((screen_width/2),(3.5*screen_height/4))
 
@@ -314,29 +304,25 @@ def game_loop():
                     # Start in the middle of the screen
                     ball.rect.x = screen_width / 2
                     ball.rect.y = screen_height / 2
-                    ball.image.fill(white)
+                    ball.image.fill(get_color("white"))
     
                     # Set a random vector
-                    degree = random.randrange(0,360)
-                    while degree == 0 or degree == 90 or degree == 180 or degree == 270 or degree == 360:
-                        degree=random.randrange(0,360)
+                    degree = random.randrange(10,350)
+                    excluded_angles = [range(80,100), range(170,190), range(260, 280)]
+                    excluded_angles = [item for sublist in excluded_angles for item in sublist]
+                
+                    while degree in excluded_angles:
+                        degree=random.randrange(10,350)
                     magnitude = 5 # determines the speed of the ball, may be subject to a random variable as well
 
                     ball.change_x = magnitude * math.cos(math.radians(degree))
                     ball.change_y = magnitude * math.sin(math.radians(degree))
-            
-                    #ball.change_y = random.randrange(-5, 6)
-                    #ball.change_x = random.randrange(5, 10)
-    
-                    # Is the ball headed left or right? Select randomly
-                    #if(random.randrange(2) == 0):
-                        #ball.change_x *= -1
     
         # Update the ball position. Pass it the list of stuff it can bounce off of
         movingsprites.update()
     
         # Clear the screen
-        screen.fill(black)
+        screen.fill(get_color("black"))
     
         # Draw the sprites
         all_sprites.draw(screen)
@@ -346,7 +332,7 @@ def game_loop():
     
         clock.tick(50)
 
-game_menu()
+# game_menu()
 
 game_loop()
 

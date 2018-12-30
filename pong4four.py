@@ -130,7 +130,6 @@ class Wall(pygame.sprite.Sprite):
         self.rect.y = y
         self.rect.x = x
  
- 
 class Ball(pygame.sprite.Sprite):
     """ This class represents the ball that bounces around. """
  
@@ -248,54 +247,107 @@ all_sprites.add(ball)
  
 clock = pygame.time.Clock()
  
-done = False
- 
-# Main program loop
-while not done:
- 
-    # Loop through any window events
-    for event in pygame.event.get():
-        # The user clicked 'close' or hit Alt-F4
-        if event.type == pygame.QUIT:
-            done = True
- 
-        # The user clicked the mouse button
-        # or pressed a key
-        elif (event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN):## or player1.my_joystick.get_button(0) or player2.my_joystick.get_button(0) or player3.my_joystick.get_button(0) or player4.my_joystick.get_button(0): 
- 
-            # Is the ball not moving?
-            if ball.change_y == 0:
- 
-                # Start in the middle of the screen
-                ball.rect.x = screen_width / 2
-                ball.rect.y = screen_height / 2
-                ball.image.fill(get_color("white"))
- 
-                # Set a random vector
-                degree = random.randrange(15,359)
-                excluded_angles = [range(80,100), range(178,182), range(265, 285)]
-                excluded_angles = [item for sublist in excluded_angles for item in sublist]
-                
-                while degree in excluded_angles:
-                    degree=random.randrange(15,359)
-                magnitude = 5 # determines the speed of the ball, may be subject to a random variable as well
+# Game Menu loop
+def game_menu():
+    menu = True
 
-                ball.change_x = magnitude * math.cos(math.radians(degree))
-                ball.change_y = magnitude * math.sin(math.radians(degree))
- 
-    # Update the ball position. Pass it the list of stuff it can bounce off of
-    movingsprites.update()
- 
-    # Clear the screen
-    screen.fill(get_color("black"))
- 
-    # Draw the sprites
-    all_sprites.draw(screen)
- 
-    # Display the screen
-    pygame.display.flip()
- 
-    clock.tick(50)
- 
-# All done, shut down Pygame
-pygame.quit()
+    while menu:
+        for event in pygame.event.get():
+            print(event)
+
+            largeText = pygame.font.Font('freesansbold.ttf',80)
+            smallText = pygame.font.Font('freesansbold.ttf', 35)
+            
+            textHeading = largeText.render("Pong4Four", True, white)
+            locationHeading = textHeading.get_rect()
+            locationHeading.center = ((screen_width/2),(screen_height/4))
+
+            textStart = smallText.render("Start Game", True, white)
+            locationStart = textStart.get_rect()
+            locationStart.center = ((screen_width/2),(2*screen_height/4))
+
+            textSettings = smallText.render("Settings", True, white)
+            locationSettings = textSettings.get_rect()
+            locationSettings.center = ((screen_width/2),(2.75*screen_height/4))
+
+            textQuit = smallText.render("Quit", True, white)
+            locationQuit = textQuit.get_rect()
+            locationQuit.center = ((screen_width/2),(3.5*screen_height/4))
+
+            texts = [(textHeading, locationHeading), (textStart, locationStart), (textSettings, locationSettings), (textQuit, locationQuit)]
+
+            screen.blits(texts)
+            
+            pygame.display.update()
+            clock.tick(15)
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    menu = False
+
+# Main program loop
+def game_loop():
+    done = False
+
+    while not done:
+
+        ## Play music
+        #pygame.mixer.music.load('foo.mp3')
+        #pygame.mixer.music.play(0)
+    
+        # Loop through any window events
+        for event in pygame.event.get():
+            # The user clicked 'close' or hit Alt-F4
+            if event.type == pygame.QUIT:
+                done = True
+    
+            # The user clicked the mouse button
+            # or pressed a key
+            elif (event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN):## or player1.my_joystick.get_button(0) or player2.my_joystick.get_button(0) or player3.my_joystick.get_button(0) or player4.my_joystick.get_button(0): 
+    
+                # Is the ball not moving?
+                if ball.change_y == 0:
+    
+                    # Start in the middle of the screen
+                    ball.rect.x = screen_width / 2
+                    ball.rect.y = screen_height / 2
+                    ball.image.fill(white)
+    
+                    # Set a random vector
+                    degree = random.randrange(0,360)
+                    while degree == 0 or degree == 90 or degree == 180 or degree == 270 or degree == 360:
+                        degree=random.randrange(0,360)
+                    magnitude = 5 # determines the speed of the ball, may be subject to a random variable as well
+
+                    ball.change_x = magnitude * math.cos(math.radians(degree))
+                    ball.change_y = magnitude * math.sin(math.radians(degree))
+            
+                    #ball.change_y = random.randrange(-5, 6)
+                    #ball.change_x = random.randrange(5, 10)
+    
+                    # Is the ball headed left or right? Select randomly
+                    #if(random.randrange(2) == 0):
+                        #ball.change_x *= -1
+    
+        # Update the ball position. Pass it the list of stuff it can bounce off of
+        movingsprites.update()
+    
+        # Clear the screen
+        screen.fill(black)
+    
+        # Draw the sprites
+        all_sprites.draw(screen)
+    
+        # Display the screen
+        pygame.display.flip()
+    
+        clock.tick(50)
+
+game_menu()
+
+game_loop()
+
+pygame.quit() # All done, shut down Pygame
